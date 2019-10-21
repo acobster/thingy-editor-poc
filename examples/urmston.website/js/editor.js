@@ -29,12 +29,14 @@ THINGY_TOOLS = {
       surroundsWith: {
         element: 'strong',
       },
+      tooltip: 'Bold',
     }, {
       text: 'I',
       controls: 'selection',
       surroundsWith: {
         element: 'em',
       },
+      tooltip: 'Italicize',
     }, {
       text: 'U',
       controls: 'selection',
@@ -42,11 +44,13 @@ THINGY_TOOLS = {
         element: 'span',
         attrs: { style: 'text-decoration: underline' },
       },
+      tooltip: 'Underline',
     }],
   },
   'a': {
     tools: [{
       text: 'href',
+      label: 'Link href',
       type: 'text',
       controls: 'href',
       on: 'change',
@@ -274,11 +278,18 @@ function createToolElement(tool, controlled, opts) {
   const toolElem = document.createElement(getToolTagName(tool))
   toolElem.innerHTML = tool.text
 
+  if (toolElem.tagName === 'BUTTON') {
+    toolElem.classList.add('te-btn')
+  }
   if (tool.controls === 'href' && tool.type === 'text') {
     toolElem.value = controlled.href
   }
   if (tool.controls === 'innerText' && tool.type === 'text') {
     toolElem.value = controlled.innerText
+  }
+
+  if (tool.tooltip) {
+    toolElem.title = tool.tooltip
   }
 
   addToolListener(toolElem, tool, controlled)
@@ -300,7 +311,7 @@ function displayTools(focusEvent, editable, opts) {
   }, [])
 
   if (toolset.length === 0) {
-    container.innerHTML = '<p style="color: #666; font-size: 0.8em">No tools for this element</p>'
+    container.innerHTML = '<p class="te-no-tools">No tools for this element</p>'
   } else {
     const toolElements = toolset.map(tool => {
       return createToolElement(tool, elem, opts)
@@ -319,20 +330,8 @@ function initToolbar(elem, opts) {
   if (!document.getElementById('te-toolbar')) {
     const toolbar = document.createElement('aside')
     toolbar.id = 'te-toolbar'
+    toolbar.classList.add('te-toolbar')
     toolbar.innerHTML = '<strong>TOOLBAR</strong><div id="te-tools"></div><footer></footer>'
-
-    toolbar.style.position = 'fixed'
-    toolbar.style.right = 0
-    toolbar.style.top = '2em'
-    toolbar.style.margin = '0.3em'
-    toolbar.style.padding = '0.3em 0.7em'
-    toolbar.style.border = '1px solid grey'
-    toolbar.style.background = '#eee'
-    toolbar.style.textAlign = 'left'
-
-    toolbar.querySelector('footer').style.color = 'black'
-    toolbar.querySelector('footer').style.fontFamily = 'monospace'
-    toolbar.querySelector('footer').style.textAlign = 'left'
 
     document.body.appendChild(toolbar)
   }
