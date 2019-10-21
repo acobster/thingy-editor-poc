@@ -1,0 +1,188 @@
+@media print {
+  * {
+    text-shadow: none !important;
+    color: #000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+  abbr[title]:after {
+    content: " (" attr(title) ")";
+  }
+  a[href^="javascript:"]:after,
+  a[href^="#"]:after {
+    content: "";
+  }
+  pre,
+  blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+  thead {
+    display: table-header-group;
+  }
+  tr,
+  img {
+    page-break-inside: avoid;
+  }
+  img {
+    max-width: 100% !important;
+  }
+  @page {
+    margin: 2cm 0.5cm;
+  }
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3;
+  }
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+  p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  h1 {
+    font-size: 30px;
+  }
+  h2 {
+    font-size: 25px;
+  }
+  h3 {
+    font-size: 20px;
+  }
+  h4 {
+    font-size: 16px;
+  }
+  h5,
+  h6 {
+    font-size: 14px;
+  }
+  select {
+    background: #fff !important;
+  }
+  .navbar {
+    display: none;
+  }
+  .table td,
+  .table th {
+    background-color: #fff !important;
+  }
+  .btn > .caret,
+  .dropup > .btn > .caret {
+    border-top-color: #000 !important;
+  }
+  .label {
+    border: 1px solid #000;
+  }
+  .table {
+    border-collapse: collapse !important;
+  }
+  .table-bordered th,
+  .table-bordered td {
+    border: 1px solid #ddd !important;
+  }
+  /*------------------------------------*\
+    Metro Park Custom Print Styles
+    \*------------------------------------*/
+  .site-pusher {
+    padding-top: 100px !important;
+  }
+  header.site-header {
+    padding-top: 0;
+    z-index: 0;
+    height: 100px !important;
+  }
+  header.site-header .bg-gradients {
+    height: 100px !important;
+  }
+  .site-header__logo-bar {
+    height: 100px !important;
+  }
+  .site-header__logo-bar .logo {
+    margin: 14px 0 25px 0;
+  }
+  .site-header__logo-bar .logo svg {
+    width: 140px;
+    height: 58px;
+  }
+  .color-bar .right-col-content,
+  .color-bar .breadcrumbs,
+  .color-bar .anchor-nav {
+    display: none;
+  }
+  .color-bar .color-bar__header-content {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .color-bar h2.h1 {
+    font-size: 30px;
+  }
+  #at-custom-sidebar,
+  .flexible-pattern,
+  .flexible-pattern--detail,
+  .interior-hero-pattern,
+  .pre-footer-pattern,
+  .filter-bar,
+  .rental-hero-wrapper,
+  .rental-icon-overveiw-bar,
+  .tabbed-slideshow,
+  header nav {
+    display: none;
+  }
+  .flexible-pattern {
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+  }
+  .flexible-pattern.flexible-pattern--accordion,
+  .flexible-pattern.flexible-pattern--box-rte,
+  .flexible-pattern.general-pattern--table {
+    display: block !important;
+  }
+  .flexible-pattern--detail .container,
+  .container {
+    max-width: 100%;
+  }
+  .flexible-pattern.flexible-pattern--detail {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  .accordion dt .acc--title > a {
+    padding: 5px 40px;
+  }
+  .accordion dd {
+    display: block;
+    padding: 0 40px 10px 40px;
+  }
+  .accordion dd.rtecontent {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .accordion dt .acc--title {
+    font-family: 'Open Sans Condensed', sans-serif;
+  }
+  .general-pattern--table__content table tbody tr td {
+    border-right: 1px solid #000000;
+  }
+  .general-pattern--table__content table td {
+    padding: 0px;
+  }
+  footer .site-footer-top,
+  footer .social {
+    display: none;
+  }
+}
+
+
+/*# sourceMappingURL=print.css.map*/
