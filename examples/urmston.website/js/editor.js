@@ -319,8 +319,25 @@ function displayTools(focusEvent, editable, opts) {
     })
   }
 
-  const footer = document.querySelector('#te-toolbar footer')
-  if (footer) footer.innerHTML = elem.tagName.toLowerCase()
+  updateToolbarHeader(elem, editable, opts)
+}
+
+function matchNestedSelector(elem, opts) {
+  if (!opts.nested) return null
+  for (var i = 0; i < opts.nested.length; i++) {
+    if (elem.matches(opts.nested[i])) return opts.nested[i]
+  }
+}
+
+function updateToolbarHeader(elem, editable, opts) {
+  const header = document.querySelector('#te-toolbar header')
+  if (!header) return
+
+  const path = opts.nested
+    ? [opts.selector, matchNestedSelector(elem, opts)]
+    : [matchNestedSelector(elem, opts)]
+
+  header.innerHTML = path.join(' &raquo; ')
 }
 
 function initToolbar(elem, opts) {
@@ -328,7 +345,9 @@ function initToolbar(elem, opts) {
     const toolbar = document.createElement('aside')
     toolbar.id = 'te-toolbar'
     toolbar.classList.add('te-toolbar')
-    toolbar.innerHTML = '<strong>TOOLBAR</strong><div id="te-tools"></div><footer></footer>'
+    toolbar.innerHTML += '<strong>TOOLBAR</strong>'
+    toolbar.innerHTML += '<header></header>'
+    toolbar.innerHTML += '<div id="te-tools"></div>'
 
     document.body.appendChild(toolbar)
   }

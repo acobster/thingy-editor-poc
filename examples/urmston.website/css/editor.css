@@ -1,7 +1,7 @@
 .te-toolbar {
   position: fixed;
   right: 0;
-  top: 2em;
+  top: 0;
   margin: 0.3em;
   padding: 0.3em 0.7em;
   border: 1px solid grey;
@@ -14,11 +14,14 @@
   font-size: 0.8em;
 }
 
-.te-toolbar footer {
+.te-toolbar header {
   display: block;
-  color: black;
+  background-color: #fff;
+  color: #666;
   font-family: monospace;
   text-align: left;
+  margin: 0.7em 0;
+  padding: 0.1em 0.3em;
 }
 
 .te-btn {
