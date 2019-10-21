@@ -165,10 +165,7 @@ function enterCallback(elem, opts) {
       const editable = opts.cloneFocusedElement ? e.target : elem
       const cloned = cloneEditable(editable, opts)
 
-      cloned.addEventListener('keypress', enterCallback(elem, opts))
-      cloned.addEventListener('focus', e => {
-        displayTools(e, elem, opts)
-      })
+      makeEditable(cloned, opts)
     }
   }
 
