@@ -401,13 +401,18 @@ function disableLinks(elem, opts) {
  */
 
 
-function thingyEditable(editables) {
-  editables.forEach(config => {
-    const elements = Array.from(document.querySelectorAll(config.selector))
+function thingyEditable(editables, config) {
+  editables.forEach(editableOpts => {
+    const elements = Array.from(document.querySelectorAll(editableOpts.selector))
+    const options  = Object.assign(
+      {},
+      config || {},
+      editableOpts
+    )
 
     elements.forEach((elem) => {
-      makeEditable(elem, config)
-      disableLinks(elem, config)
+      makeEditable(elem, options)
+      disableLinks(elem, options)
     })
   })
 
