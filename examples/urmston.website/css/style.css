@@ -5,7 +5,7 @@ html {
     font-size: 18px;
     display: flex;
     justify-content: center;
-    background-image: url('gyro.png');
+    background-image: url('/img/gyro.png');
     background-position: center;
     background-attachment: fixed;
     background-size: 280px;
