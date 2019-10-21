@@ -49,10 +49,7 @@ THINGY_TOOLS = {
       text: 'href',
       type: 'text',
       controls: 'href',
-    }, {
-      text: 'text',
-      type: 'text',
-      controls: 'innerText',
+      on: 'change',
     }],
   },
 }
@@ -217,6 +214,8 @@ function styleSelection(tool, controlled, toolUiEvent) {
   // assume for now that selection is inside a single node,
   // and that it's a text node, and that no other text nodes are adjacent to it
   const node = selection.focusNode
+  if (!node) return
+
   const selectionLength = selection.focusOffset - selection.anchorOffset
 
   const subStart = selection.anchorOffset
@@ -248,9 +247,15 @@ function styleSelection(tool, controlled, toolUiEvent) {
   inject(chunks)
 }
 
+function updateHref(tool, controlled, toolUiEvent) {
+  controlled.href = toolUiEvent.target.value
+}
+
 function toolAction(tool, controlled, toolUiEvent) {
   if (tool.controls === 'selection') {
     styleSelection(tool, controlled, toolUiEvent)
+  } else if (tool.controls === 'href') {
+    updateHref(tool, controlled, toolUiEvent)
   }
 }
 
@@ -260,7 +265,12 @@ function getToolTagName(tool) {
   return 'button'
 }
 
-function createToolElement(tool, controlled) {
+function addToolListener(toolElem, tool, controlled) {
+  const on = tool.on || 'click'
+  toolElem.addEventListener(on, e => { toolAction(tool, controlled, e) })
+}
+
+function createToolElement(tool, controlled, opts) {
   const toolElem = document.createElement(getToolTagName(tool))
   toolElem.innerHTML = tool.text
 
@@ -271,7 +281,7 @@ function createToolElement(tool, controlled) {
     toolElem.value = controlled.innerText
   }
 
-  toolElem.addEventListener('click', e => { toolAction(tool, controlled, e) })
+  addToolListener(toolElem, tool, controlled)
 
   return toolElem
 }
@@ -289,12 +299,17 @@ function displayTools(focusEvent, editable, opts) {
     return tools.concat(THINGY_TOOLS[selector].tools)
   }, [])
 
-  const toolElements = toolset.map(tool => { return createToolElement(tool, elem) })
-
-  container.innerHTML = ''
-  toolElements.forEach(toolElem => {
-    container.appendChild(toolElem)
-  })
+  if (toolset.length === 0) {
+    container.innerHTML = '<p style="color: #666; font-size: 0.8em">No tools for this element</p>'
+  } else {
+    const toolElements = toolset.map(tool => {
+      return createToolElement(tool, elem, opts)
+    })
+    container.innerHTML = ''
+    toolElements.forEach(toolElem => {
+      container.appendChild(toolElem)
+    })
+  }
 
   const footer = document.querySelector('#te-toolbar footer')
   if (footer) footer.innerHTML = elem.tagName.toLowerCase()
