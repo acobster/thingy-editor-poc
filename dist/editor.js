@@ -20,32 +20,36 @@
  *
  */
 
+const THINGY_TEXT_TOOLS = [{
+  text: 'B',
+  controls: 'selection',
+  surroundsWith: {
+    element: 'strong',
+  },
+  tooltip: 'Bold',
+}, {
+  text: 'I',
+  controls: 'selection',
+  surroundsWith: {
+    element: 'em',
+  },
+  tooltip: 'Italicize',
+}, {
+  text: 'U',
+  controls: 'selection',
+  surroundsWith: {
+    element: 'span',
+    attrs: { style: 'text-decoration: underline' },
+  },
+  tooltip: 'Underline',
+}]
 
-THINGY_TOOLS = {
+const THINGY_TOOLS = {
+  'div': {
+    tools: THINGY_TEXT_TOOLS,
+  },
   'p': {
-    tools: [{
-      text: 'B',
-      controls: 'selection',
-      surroundsWith: {
-        element: 'strong',
-      },
-      tooltip: 'Bold',
-    }, {
-      text: 'I',
-      controls: 'selection',
-      surroundsWith: {
-        element: 'em',
-      },
-      tooltip: 'Italicize',
-    }, {
-      text: 'U',
-      controls: 'selection',
-      surroundsWith: {
-        element: 'span',
-        attrs: { style: 'text-decoration: underline' },
-      },
-      tooltip: 'Underline',
-    }],
+    tools: THINGY_TEXT_TOOLS,
   },
   'a': {
     tools: [{
@@ -54,6 +58,12 @@ THINGY_TOOLS = {
       type: 'text',
       controls: 'href',
       on: 'change',
+    }],
+  },
+  'img': {
+    tools: [{
+      text: 'image??',
+      type: 'image',
     }],
   },
 }
@@ -263,6 +273,7 @@ function toolAction(tool, controlled, toolUiEvent) {
 function getToolTagName(tool) {
   if (tool.tagName) return tool.tagName
   if (tool.type === 'text') return 'input'
+  if (tool.type === 'image') return 'image-picker'
   return 'button'
 }
 
