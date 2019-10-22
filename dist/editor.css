@@ -36,6 +36,14 @@
   cursor: pointer;
 }
 
+.te-tool--image {
+  display: flex;
+}
+.te-tool--image img {
+  margin: 0.3em;
+  cursor: pointer;
+}
+
 [contenteditable]:focus {
   outline: 2px dotted currentColor;
 }

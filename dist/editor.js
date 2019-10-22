@@ -273,7 +273,7 @@ function toolAction(tool, controlled, toolUiEvent) {
 function getToolTagName(tool) {
   if (tool.tagName) return tool.tagName
   if (tool.type === 'text') return 'input'
-  if (tool.type === 'image') return 'image-picker'
+  if (tool.type === 'image') return 'div'
   return 'button'
 }
 
@@ -285,6 +285,7 @@ function addToolListener(toolElem, tool, controlled) {
 function createToolElement(tool, controlled, opts) {
   const toolElem = document.createElement(getToolTagName(tool))
   toolElem.innerHTML = tool.text
+  toolElem.classList.add('te-tool--'+tool.type)
 
   if (toolElem.tagName === 'BUTTON') {
     toolElem.classList.add('te-btn')
@@ -294,6 +295,28 @@ function createToolElement(tool, controlled, opts) {
   }
   if (tool.controls === 'innerText' && tool.type === 'text') {
     toolElem.value = controlled.innerText
+  }
+  if (tool.type === 'image') {
+    const __onImgPick = e => {
+      controlled.src    = e.target.src
+      controlled.srcset = e.target.srcset
+    }
+
+    const        img1 = document.createElement('img')
+    img1.src     = 'https://placehold.it/445x270/880000?text=IMAGE+ONE'
+    img1.srcset  = 'https://placehold.it/445x270/880000?text=IMAGE+ONE, https://placehold.it/980x540/880000?text=IMAGE+ONE 2x'
+    img1.title   = 'Image 1'
+    img1.onclick = __onImgPick
+
+    const        img2 = document.createElement('img')
+    img2.src     = 'https://placehold.it/445x270/008800?text=IMAGE+TWO'
+    img2.srcset  = 'https://placehold.it/445x270/008800?text=IMAGE+TWO, https://placehold.it/980x540/008800?text=IMAGE+TWO 2x'
+    img2.title   = 'Image 2'
+    img2.onclick = __onImgPick
+
+    toolElem.innerHTML = ''
+    toolElem.appendChild(img1)
+    toolElem.appendChild(img2)
   }
 
   if (tool.tooltip) {
