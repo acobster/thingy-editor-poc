@@ -409,6 +409,8 @@ function disableLinks(elem, opts) {
 
 
 function thingyEditable(editables, config) {
+  config = config || {}
+
   config.appendToolbarTo = config.appendToolbarTo || document.body
 
   editables.forEach(editableOpts => {
