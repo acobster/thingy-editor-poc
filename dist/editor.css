@@ -43,6 +43,7 @@
 .te-tool--image img {
   margin: 0.3em;
   cursor: pointer;
+  max-width: 200px;
 }
 
 [contenteditable]:focus {
