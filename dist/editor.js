@@ -45,10 +45,10 @@ const THINGY_TEXT_TOOLS = [{
 }]
 
 const THINGY_TOOLS = {
-  'div': {
+  'p': {
     tools: THINGY_TEXT_TOOLS,
   },
-  'p': {
+  'div': {
     tools: THINGY_TEXT_TOOLS,
   },
   'a': {
@@ -339,12 +339,9 @@ function displayTools(focusEvent, editable, opts) {
   const container = document.getElementById('te-tools')
   if (!container) return
 
+  // TODO revise focus logic to make it so we can more reliably focus on
+  // parent <a> elements, so we don't have to do hacky shit like this
   const elem = opts.nested ? focusEvent.target : editable
-
-  // Determine which element this tool is controlling
-  const controlledElement = focusEvent.target.matches(opts.selector)
-    ? focusEvent.target
-    : editable
 
   const toolset = Object.keys(THINGY_TOOLS).filter(selector => {
     // TODO maintain mapping of which element this tool is controlling
@@ -357,7 +354,8 @@ function displayTools(focusEvent, editable, opts) {
     container.innerHTML = '<p class="te-no-tools">No tools for this element</p>'
   } else {
     const toolElements = toolset.map(tool => {
-      return createToolElement(tool, controlledElement, opts)
+      // TODO Determine which element this tool is controlling
+      return createToolElement(tool, elem, opts)
     })
     container.innerHTML = ''
     toolElements.forEach(toolElem => {
