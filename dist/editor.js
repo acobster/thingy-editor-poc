@@ -297,26 +297,23 @@ function createToolElement(tool, controlled, opts) {
     toolElem.value = controlled.innerText
   }
   if (tool.type === 'image') {
-    const __onImgPick = e => {
-      controlled.src    = e.target.src
-      controlled.srcset = e.target.srcset
-    }
-
-    const        img1 = document.createElement('img')
-    img1.src     = 'https://placehold.it/445x270/880000?text=IMAGE+ONE'
-    img1.srcset  = 'https://placehold.it/445x270/880000?text=IMAGE+ONE, https://placehold.it/980x540/880000?text=IMAGE+ONE 2x'
-    img1.title   = 'Image 1'
-    img1.onclick = __onImgPick
-
-    const        img2 = document.createElement('img')
-    img2.src     = 'https://placehold.it/445x270/008800?text=IMAGE+TWO'
-    img2.srcset  = 'https://placehold.it/445x270/008800?text=IMAGE+TWO, https://placehold.it/980x540/008800?text=IMAGE+TWO 2x'
-    img2.title   = 'Image 2'
-    img2.onclick = __onImgPick
-
     toolElem.innerHTML = ''
-    toolElem.appendChild(img1)
-    toolElem.appendChild(img2)
+    opts.imageLibrary.forEach(image => {
+      const imgElem  = document.createElement('img')
+      imgElem.src    = image.src
+      imgElem.srcset = image.srcset
+      imgElem.title  = image.title
+      imgElem.alt    = image.alt
+
+      imgElem.onclick = e => {
+        controlled.src    = image.src
+        controlled.srcset = image.srcset
+        controlled.title  = image.title
+        controlled.alt    = image.alt
+      }
+
+      toolElem.appendChild(imgElem)
+    })
   }
 
   if (tool.tooltip) {
