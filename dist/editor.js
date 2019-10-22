@@ -340,7 +340,7 @@ function updateToolbarHeader(elem, editable, opts) {
   header.innerHTML = path.join(' &raquo; ')
 }
 
-function initToolbar(elem, opts) {
+function initToolbar(opts) {
   if (!document.getElementById('te-toolbar')) {
     const toolbar = document.createElement('aside')
     toolbar.id = 'te-toolbar'
@@ -349,7 +349,7 @@ function initToolbar(elem, opts) {
     toolbar.innerHTML += '<header></header>'
     toolbar.innerHTML += '<div id="te-tools"></div>'
 
-    document.body.appendChild(toolbar)
+    opts.appendToolbarTo.appendChild(toolbar)
   }
 }
 
@@ -402,6 +402,8 @@ function disableLinks(elem, opts) {
 
 
 function thingyEditable(editables, config) {
+  config.appendToolbarTo = config.appendToolbarTo || document.body
+
   editables.forEach(editableOpts => {
     const elements = Array.from(document.querySelectorAll(editableOpts.selector))
     const options  = Object.assign(
@@ -416,5 +418,5 @@ function thingyEditable(editables, config) {
     })
   })
 
-  initToolbar()
+  initToolbar(config)
 }
