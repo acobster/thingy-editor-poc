@@ -392,6 +392,13 @@ function disableLinks(elem, opts) {
       e.preventDefault()
     })
   })
+
+  // if this element is itself a link, disable it too
+  if (elem.tagName.toLowerCase() === 'a') {
+    elem.addEventListener('click', e => {
+      e.preventDefault()
+    })
+  }
 }
 
 
