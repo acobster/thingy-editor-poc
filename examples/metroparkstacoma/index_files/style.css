@@ -23,7 +23,6 @@
 .react-datepicker__month-read-view--down-arrow::before,
 .react-datepicker__month-year-read-view--down-arrow::before {
   content: "";
-  z-index: -1;
   border-width: 8px;
   left: -8px;
   border-bottom-color: #aeaeae;
@@ -104,7 +103,6 @@
 }
 
 .react-datepicker-popper {
-  z-index: 1;
 }
 
 .react-datepicker-popper[data-placement^="bottom"] {
@@ -184,7 +182,6 @@
   width: 0;
   padding: 0;
   border: 0.45rem solid transparent;
-  z-index: 1;
   height: 10px;
   width: 10px;
   text-indent: -999em;
@@ -567,7 +564,6 @@
   width: 50%;
   left: 25%;
   top: 30px;
-  z-index: 1;
   text-align: center;
   border-radius: 0.3rem;
   border: 1px solid #aeaeae;
@@ -692,7 +688,6 @@
   justify-content: center;
   align-items: center;
   display: flex;
-  z-index: 2147483647;
 }
 
 .react-datepicker__portal .react-datepicker__day-name,
@@ -1247,7 +1242,6 @@ html[xmlns] .flexslider .slides {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 7040;
   overflow: hidden;
   position: fixed;
   background: #fff;
@@ -1258,7 +1252,6 @@ html[xmlns] .flexslider .slides {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 8040;
   position: fixed;
   outline: none !important;
   -webkit-backface-visibility: hidden;
@@ -1288,7 +1281,6 @@ html[xmlns] .flexslider .slides {
   vertical-align: middle;
   margin: 0 auto;
   text-align: left;
-  z-index: 1045;
   padding-left: 40px;
   padding-right: 40px;
 }
@@ -1376,7 +1368,6 @@ html[xmlns] .flexslider .slides {
   margin-top: -0.8em;
   left: 8px;
   right: 8px;
-  z-index: 1044;
 }
 .mfp-preloader a {
   color: #CCC;
@@ -1399,7 +1390,6 @@ button.mfp-arrow {
   -webkit-appearance: none;
   display: block;
   outline: none;
-  z-index: 1046;
   box-shadow: none;
   touch-action: manipulation;
 }
@@ -1434,7 +1424,6 @@ button::-moz-focus-inner {
 }
 .mfp-close-btn-in .mfp-close {
   color: #2A7551;
-  z-index: 10000;
 }
 .mfp-image-holder .mfp-close,
 .mfp-iframe-holder .mfp-close {
@@ -1568,7 +1557,6 @@ img.mfp-img {
   right: 0;
   width: auto;
   height: auto;
-  z-index: -1;
   box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
   background: #444;
 }
@@ -3111,7 +3099,6 @@ address {
   text-decoration: none;
   top: 5px;
   width: auto;
-  z-index: 100000;
   /* Above WP toolbar. */
 }
 /* Make sure embeds and iframes fit their containers. */
@@ -3525,7 +3512,7 @@ input[type="submit"] {
 input[type="submit"] span {
   color: #fff;
   position: relative;
-  z-index: 5;
+  z-index: 1;
 }
 .btn:after,
 input[type="submit"]:after {
@@ -4508,7 +4495,7 @@ input[type="submit"].disabled.disabled span {
 \*------------------------------------*/
 .global-search-wrapper {
   position: fixed;
-  z-index: 90001;
+  z-index: 1;
   top: 0;
   background: #fff;
   width: 100%;
@@ -4596,7 +4583,7 @@ input[type="submit"].disabled.disabled span {
 \*------------------------------------*/
 .filters-modal__overlay {
   position: fixed;
-  z-index: 100030;
+  z-index: 1;
   top: 0;
   background-color: rgba(255, 255, 255, 0.9);
   width: 100%;
@@ -4871,7 +4858,6 @@ ul.anchor-nav li a:hover {
   width: 100%;
   position: relative;
   margin-top: -55px;
-  z-index: 6;
 }
 @media only screen and (max-width: 767px) {
   .tabbed-slideshow__controls {
@@ -5624,7 +5610,7 @@ input[type=radio]:checked + label:after {
   margin-top: 0;
   border: 2px solid #D8D8D8;
   border-top: none;
-  z-index: 5;
+  z-index: 1;
   background-color: #fff;
   width: 100%;
   opacity: 0;
@@ -5993,7 +5979,7 @@ input[type=radio]:checked + label:after {
 .accordion dt .acc--title {
   margin: 0;
   position: relative;
-  z-index: 5;
+  z-index: 1;
   color: #2A7551;
   font-family: 'Open Sans', sans-serif;
   font-size: 24px;
@@ -6659,7 +6645,7 @@ ul.rt__list {
   overflow: hidden;
   white-space: nowrap;
   text-indent: 101%;
-  z-index: 501;
+  z-index: 1;
   border: 0;
   -webkit-appearance: none;
   transition: all 0.25s ease;
@@ -6715,7 +6701,7 @@ ul.slick-dots {
   position: absolute;
   bottom: 0;
   text-align: center;
-  z-index: 5;
+  z-index: 1;
 }
 ul.slick-dots li {
   display: inline-block;
@@ -8018,6 +8004,7 @@ section.pre-footer-pattern .flexible-pattern--small-image-cards__card:hover {
 .flexible-pattern--cta-cards--img {
   position: relative;
   overflow: hidden;
+  z-index: 0;
 }
 .flexible-pattern--cta-cards--img .overlay {
   position: absolute;
@@ -8220,6 +8207,7 @@ section.pre-footer-pattern .flexible-pattern--small-image-cards__card:hover {
 .card-img {
   position: relative;
   overflow: hidden;
+  z-index: 0;
 }
 .card-img .overlay {
   position: absolute;
@@ -8843,7 +8831,7 @@ section.pre-footer-pattern .flexible-pattern--small-image-cards__card:hover {
   width: 345px;
   padding: 30px;
   background-color: #EAEAEA;
-  z-index: 3;
+  z-index: 1;
   margin-top: 30px;
 }
 .hero-details-box:before {
@@ -9464,7 +9452,7 @@ header.site-header {
   width: 100%;
   height: 220px;
   background: #053C84;
-  z-index: 1001;
+  z-index: 0;
   padding-top: 60px;
 }
 header.site-header .bg-gradients {
@@ -9557,7 +9545,7 @@ header.site-header .bg-gradients:before {
   position: absolute;
   top: 25px;
   right: 25px;
-  z-index: 9000;
+  z-index: 1;
   cursor: pointer;
 }
 .menu-btn .toggle {
@@ -9653,7 +9641,7 @@ header.site-header .bg-gradients:before {
 }
 nav.main-nav {
   position: relative;
-  z-index: 1005;
+  z-index: 1;
   font-family: 'Open Sans Condensed', sans-serif;
   text-transform: uppercase;
 }
@@ -9739,7 +9727,7 @@ nav.main-nav ul.menu li:hover > a {
   }
   nav.main-nav ul.menu li a {
     position: relative;
-    z-index: 500;
+    z-index: 1;
     padding: 10px;
     color: #fff;
     font-size: 22px;
@@ -9759,7 +9747,7 @@ nav.main-nav ul.menu li:hover > a {
     width: 35px;
     height: 100%;
     cursor: pointer;
-    z-index: 600;
+    z-index: 1;
   }
   nav.main-nav ul.menu li.menu-item-has-children a span.dropper:after {
     content: "";
@@ -10509,6 +10497,7 @@ footer.site-footer .site-footer-bottom .social a:hover svg g {
 .container {
   margin: 0 auto;
   max-width: 1460px;
+  z-index: 1;
 }
 .mx-1000 {
   max-width: 1000px;
@@ -10577,6 +10566,7 @@ footer.site-footer .site-footer-bottom .social a:hover svg g {
 }
 .site-pusher {
   padding-top: 220px;
+  z-index: 0;
 }
 .home .site-pusher {
   padding-top: 240px;
@@ -10630,6 +10620,7 @@ footer.site-footer .site-footer-bottom .social a:hover svg g {
 }
 main.site-main {
   position: relative;
+  z-index: 0;
 }
 @media print {
   * {
