@@ -37,6 +37,10 @@
   cursor: pointer;
 }
 
+.te-tool--link {
+  font-size: 2em;
+}
+
 .te-tool--image {
   display: flex;
 }

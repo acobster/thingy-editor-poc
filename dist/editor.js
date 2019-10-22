@@ -53,11 +53,15 @@ const THINGY_TOOLS = {
   },
   'a': {
     tools: [{
-      text: 'href',
       label: 'Link href',
       type: 'text',
       controls: 'href',
       on: 'change',
+    }, {
+      type: 'link',
+      tag: 'a',
+      linksTo: 'href',
+      text: '➡️ '
     }],
   },
   'img': {
@@ -260,6 +264,8 @@ function styleSelection(tool, controlled, toolUiEvent) {
 
 function updateHref(tool, controlled, toolUiEvent) {
   controlled.href = toolUiEvent.target.value
+  // TODO make this not horrible
+  document.getElementById('te-link-tester').href = toolUiEvent.target.value
 }
 
 function toolAction(tool, controlled, toolUiEvent) {
@@ -274,7 +280,7 @@ function getToolTagName(tool) {
   if (tool.tagName) return tool.tagName
   if (tool.type === 'text') return 'input'
   if (tool.type === 'image') return 'div'
-  return 'button'
+  return tool.tag || 'button'
 }
 
 function addToolListener(toolElem, tool, controlled) {
@@ -284,17 +290,21 @@ function addToolListener(toolElem, tool, controlled) {
 
 function createToolElement(tool, controlled, opts) {
   const toolElem = document.createElement(getToolTagName(tool))
-  toolElem.innerHTML = tool.text
   toolElem.classList.add('te-tool--'+tool.type)
 
+  if (tool.text) {
+    toolElem.innerHTML = tool.text
+  }
   if (toolElem.tagName === 'BUTTON') {
     toolElem.classList.add('te-btn')
   }
-  if (tool.controls === 'href' && tool.type === 'text') {
+  if (tool.controls === 'href' && tool.type === 'text' && controlled.href) {
     toolElem.value = controlled.href
   }
-  if (tool.controls === 'innerText' && tool.type === 'text') {
-    toolElem.value = controlled.innerText
+  if (tool.linksTo === 'href') {
+    toolElem.id     = 'te-link-tester'
+    toolElem.href   = controlled.href
+    toolElem.target = '_blank'
   }
   if (tool.type === 'image') {
     toolElem.innerHTML = ''
@@ -331,6 +341,11 @@ function displayTools(focusEvent, editable, opts) {
 
   const elem = opts.nested ? focusEvent.target : editable
 
+  // Determine which element this tool is controlling
+  const controlledElement = focusEvent.target.matches(opts.selector)
+    ? focusEvent.target
+    : editable
+
   const toolset = Object.keys(THINGY_TOOLS).filter(selector => {
     // TODO maintain mapping of which element this tool is controlling
     return editableMatchesSelector(elem, editable, selector)
@@ -342,7 +357,7 @@ function displayTools(focusEvent, editable, opts) {
     container.innerHTML = '<p class="te-no-tools">No tools for this element</p>'
   } else {
     const toolElements = toolset.map(tool => {
-      return createToolElement(tool, elem, opts)
+      return createToolElement(tool, controlledElement, opts)
     })
     container.innerHTML = ''
     toolElements.forEach(toolElem => {
