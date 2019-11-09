@@ -23,24 +23,17 @@
 const THINGY_TEXT_TOOLS = [{
   text: 'B',
   controls: 'selection',
-  surroundsWith: {
-    element: 'strong',
-  },
+  command: 'bold',
   tooltip: 'Bold',
 }, {
   text: 'I',
   controls: 'selection',
-  surroundsWith: {
-    element: 'em',
-  },
+  command: 'italic',
   tooltip: 'Italicize',
 }, {
   text: 'U',
   controls: 'selection',
-  surroundsWith: {
-    element: 'span',
-    attrs: { style: 'text-decoration: underline' },
-  },
+  command: 'underline',
   tooltip: 'Underline',
 }]
 
@@ -211,57 +204,6 @@ function enterCallback(elem, opts) {
  */
 
 
-function createStyleElement(innerText, tool, controlled, toolUiEvent) {
-  const elem = document.createElement(tool.surroundsWith.element)
-  elem.innerText = innerText
-
-  if (tool.surroundsWith.attrs) {
-    Object.keys(tool.surroundsWith.attrs).forEach(k => {
-      elem.setAttribute(k, tool.surroundsWith.attrs[k])
-    })
-  }
-
-  return elem
-}
-
-function styleSelection(tool, controlled, toolUiEvent) {
-  const selection = window.getSelection()
-  // assume for now that selection is inside a single node,
-  // and that it's a text node, and that no other text nodes are adjacent to it
-  const node = selection.focusNode
-  if (!node) return
-
-  const selectionLength = selection.focusOffset - selection.anchorOffset
-
-  const subStart = selection.anchorOffset
-  const subEnd = selection.focusOffset
-  const chunks = [
-    node.wholeText.substring(0, subStart),
-    node.wholeText.substring(subStart, subEnd),
-    node.wholeText.substring(subEnd),
-  ]
-
-  const styleNode = createStyleElement(chunks[1], tool, controlled, toolUiEvent)
-
-  const siblingNode = node.nextSibling
-  const parentNode = node.parentNode
-
-  const inject = node.nextSibling
-    ? (chunks) => {
-      parentNode.insertBefore(new Text(chunks[0]), siblingNode)
-      parentNode.insertBefore(styleNode, siblingNode)
-      parentNode.insertBefore(new Text(chunks[2]), siblingNode)
-    }
-    : (chunks) => {
-      parentNode.appendChild(new Text(chunks[0]))
-      parentNode.appendChild(styleNode)
-      parentNode.appendChild(new Text(chunks[2]))
-    }
-
-  controlled.removeChild(node)
-  inject(chunks)
-}
-
 function updateHref(tool, controlled, toolUiEvent) {
   controlled.href = toolUiEvent.target.value
   // TODO make this not horrible
@@ -269,11 +211,7 @@ function updateHref(tool, controlled, toolUiEvent) {
 }
 
 function toolAction(tool, controlled, toolUiEvent) {
-  if (tool.controls === 'selection') {
-    styleSelection(tool, controlled, toolUiEvent)
-  } else if (tool.controls === 'href') {
-    updateHref(tool, controlled, toolUiEvent)
-  }
+  document.execCommand(tool.command, null, tool.commandArg)
 }
 
 function getToolTagName(tool) {
