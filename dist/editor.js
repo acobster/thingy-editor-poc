@@ -441,6 +441,7 @@ function subscribe(elem) {
 
 function makeEditable(elem, opts) {
   subscribe(elem)
+  elem.style.cursor = 'pointer'
 
   if (opts.nested) {
     opts.nested.forEach((selector) => {
@@ -451,6 +452,7 @@ function makeEditable(elem, opts) {
           displayTools(e, elem, opts)
         })
         subscribe(child)
+        child.style.cursor = 'pointer'
       })
     })
   } else {
