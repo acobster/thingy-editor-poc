@@ -397,6 +397,35 @@ function initToolbar(opts) {
   }
 }
 
+function nearElement(x, y, elem) {
+  return x > elem.offsetLeft - 16
+      && x < elem.offsetLeft + elem.offsetWidth + 16
+      && y > elem.offsetTop - 16
+      && y < elem.offsetTop + elem.offsetHeight + 16
+}
+
+function initMouseListener(opts, editables) {
+  document.documentElement.addEventListener('mousemove', (e) => {
+    editables.forEach(elem => {
+      if (nearElement(e.clientX, e.clientY, elem)) {
+        //console.log([e.clientX, e.clientY], [elem.offsetLeft, elem.offsetTop])
+        elem.style.outline = '16px solid red'
+      } else {
+        elem.style.outline = 'initial'
+      }
+    })
+  })
+  document.documentElement.addEventListener('click', (e) => {
+    editables.forEach(elem => {
+      // TODO may be "near" multiple editables; pick one to focus on
+      // (based on nesting?? innermost position?)
+      if (nearElement(e.clientX, e.clientY, elem)) {
+        elem.focus()
+      }
+    })
+  })
+}
+
 
 
 /*
@@ -404,7 +433,15 @@ function initToolbar(opts) {
  */
 
 
+var EDITABLE_ELEMENTS = [];
+
+function subscribe(elem) {
+  EDITABLE_ELEMENTS.push(elem)
+}
+
 function makeEditable(elem, opts) {
+  subscribe(elem)
+
   if (opts.nested) {
     opts.nested.forEach((selector) => {
       Array.from(elem.querySelectorAll(selector)).forEach(child => {
@@ -413,6 +450,7 @@ function makeEditable(elem, opts) {
         child.addEventListener('focus', e => {
           displayTools(e, elem, opts)
         })
+        subscribe(child)
       })
     })
   } else {
@@ -472,4 +510,5 @@ function thingyEditable(editables, config) {
   })
 
   initToolbar(config)
+  initMouseListener(config, EDITABLE_ELEMENTS)
 }
