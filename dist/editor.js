@@ -322,16 +322,57 @@ function updateToolbarHeader(elem, editable, opts) {
   header.innerHTML = path.join(' &raquo; ')
 }
 
+
+function makeDraggable(elem) {
+  var relativeX = 0, relativeY = 0
+  if (document.getElementById(elem.id + "header")) {
+    // if present, the header is where you move the DIV from:
+    document.getElementById(elem.id + "header").onmousedown = dragMouseDown;
+  } else {
+    // otherwise, move the DIV from anywhere inside the DIV:
+    elem.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // get the mouse cursor position at startup, relative to elem
+		relativeX = e.clientX - elem.offsetLeft
+		relativeY = e.clientY - elem.offsetTop
+
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // set the element's new position relative to the cursor
+    elem.style.left = (e.clientX - relativeX) + "px";
+    elem.style.top = (e.clientY - relativeY) + "px";
+  }
+
+  function closeDragElement() {
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
 function initToolbar(opts) {
   if (!document.getElementById('te-toolbar')) {
     const toolbar = document.createElement('aside')
     toolbar.id = 'te-toolbar'
     toolbar.classList.add('te-toolbar')
+    toolbar.style.cursor = 'move'
     toolbar.innerHTML += '<strong>TOOLBAR</strong>'
     toolbar.innerHTML += '<header></header>'
     toolbar.innerHTML += '<div id="te-tools"></div>'
 
     opts.appendToolbarTo.appendChild(toolbar)
+
+    makeDraggable(toolbar, opts)
   }
 }
 
@@ -391,6 +432,8 @@ function makeEditable(elem, opts) {
         })
         subscribe(child)
         child.style.cursor = 'pointer'
+
+				child.addEventListener('change', e => { console.log('something changed') })
       })
     })
   } else {
