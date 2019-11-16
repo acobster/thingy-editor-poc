@@ -75,7 +75,7 @@ header {
     background: var(--accent-color);
 }
 
-header > section {
+header section {
     padding: 20px;
     border: 1px solid black;
     margin-bottom: -1px;
@@ -88,9 +88,8 @@ header > section:first-child {
     background-position: center;
 }
 
-header > section.socials > * {
+section.socials > * {
     margin-right: 20px;
-    display: block;
 }
 
 header > section > div {
