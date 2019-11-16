@@ -32,10 +32,20 @@ import localStorageBackend from './localStorageBackend'
  * change to the application state, including the element being edited and
  * the editing tool.
  */
-function emit(tool, elem, toolUiEvent, opts) {
+function emit(e, opts) {
   if ( ! (opts && opts.backends && typeof opts.backends.forEach === 'function') ) {
     console.error('no valid backends detected')
     return
+  }
+
+  const { tool, controlled } = e.context
+
+  // TODO make this a generic backend
+  // DOM manipulations
+  if (tool.command) {
+    document.execCommand(tool.command, null, tool.commandArg)
+  } else if (tool.controls) {
+    controlled[tool.controls] = e.target.value
   }
 
   const update = (key, path, val) => {
@@ -48,13 +58,13 @@ function emit(tool, elem, toolUiEvent, opts) {
     })
   }
 
-  if (elem && elem.dataset && elem.dataset.thingyPath) {
-    const path = elem.dataset.thingyPath
+  if (controlled && controlled.dataset && controlled.dataset.thingyPath) {
+    const path = controlled.dataset.thingyPath
 
     if (tool.controls) {
       // TODO better delineate events somehow
       // TODO don't hard-code 'app'
-      update('app', `${path} ${tool.path || tool.controls}`, elem[tool.controls])
+      update('app', `${path} ${tool.path || tool.controls}`, controlled[tool.controls])
     }
   }
 }
@@ -214,17 +224,6 @@ function enterCallback(elem, opts) {
  */
 
 
-function toolAction(tool, controlled, toolUiEvent, opts) {
-  // TODO implement DOM manipulations as a backend!!
-  if (tool.command) {
-    document.execCommand(tool.command, null, tool.commandArg)
-  } else if (tool.controls) {
-    controlled[tool.controls] = toolUiEvent.target.value
-  }
-
-  emit(tool, controlled, toolUiEvent, opts)
-}
-
 function getToolTagName(tool) {
   if (tool.tagName) return tool.tagName
   if (tool.type === 'text') return 'input'
@@ -234,7 +233,13 @@ function getToolTagName(tool) {
 
 function addToolListener(toolElem, tool, controlled, opts) {
   const on = tool.on || 'click'
-  toolElem.addEventListener(on, e => { toolAction(tool, controlled, e, opts) })
+
+  // add to the event context and emit the Event to our backends
+  toolElem.addEventListener(on, e => {
+    e.context = { tool, controlled }
+
+    emit(e, opts)
+  })
 }
 
 function createToolElement(tool, controlled, opts) {
