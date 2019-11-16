@@ -31,12 +31,21 @@
  * the editing tool.
  */
 function emit(tool, elem, toolUiEvent, opts) {
-  if ( ! (opts && opts.backend && opts.backend.update) ) {
-    console.error('no valid backend detected')
+  //TODO
+  if ( ! (opts && opts.backends && typeof opts.backends.forEach === 'function') ) {
+    console.error('no valid backends detected')
     return
   }
 
-  const { update } = opts.backend
+  const update = (key, path, val) => {
+    // call update on each backend
+    opts.backends.forEach(backend => {
+      if (typeof backend.update !== 'function') {
+        console.error('backend does not have an update function: ', backend)
+      }
+      backend.update(key, path, val)
+    })
+  }
 
   if (elem && elem.dataset && elem.dataset.thingyPath) {
     const path = elem.dataset.thingyPath
@@ -512,8 +521,6 @@ function disableLinks(elem, opts) {
 
 function thingyEditable(editables, config) {
   config = config || {}
-
-  config.backend = config.backend
 
   config.appendToolbarTo = config.appendToolbarTo || document.body
 

@@ -28,7 +28,7 @@ customElements.define('social-nav', SocialNav)
 
 
 // Set up the backend for our editor
-const backend = { update }
+const localStorageBackend = { update }
 
 // Set up our editor
 thingyEditable([{
@@ -41,5 +41,5 @@ thingyEditable([{
   nested: ['a', 'a h3', 'div em', 'p'],
   cloneOnCtrlEnter: true,
 }], {
-  backend
+  backends: [localStorageBackend]
 })
