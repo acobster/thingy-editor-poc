@@ -28,6 +28,10 @@ customElements.define('social-nav', SocialNav)
 
 // Set up our editor
 thingyEditable([{
+  selector: '.socials',
+  disallowDefaultEnter: true,
+  nested: ['a'],
+}, {
   selector: '.list li',
   disallowDefaultEnter: true,
   nested: ['a', 'a h3', 'div em', 'p'],

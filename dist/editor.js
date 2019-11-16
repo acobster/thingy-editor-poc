@@ -49,7 +49,7 @@ const THINGY_TOOLS = {
       label: 'Link href',
       type: 'text',
       controls: 'href',
-      on: 'change',
+      on: 'keyup',
     }, {
       type: 'link',
       tag: 'a',
@@ -211,7 +211,11 @@ function updateHref(tool, controlled, toolUiEvent) {
 }
 
 function toolAction(tool, controlled, toolUiEvent) {
-  document.execCommand(tool.command, null, tool.commandArg)
+  if (tool.command) {
+    document.execCommand(tool.command, null, tool.commandArg)
+  } else if (tool.controls) {
+    controlled[tool.controls] = toolUiEvent.target.value
+  }
 }
 
 function getToolTagName(tool) {
@@ -325,9 +329,9 @@ function updateToolbarHeader(elem, editable, opts) {
 
 function makeDraggable(elem) {
   var relativeX = 0, relativeY = 0
-  if (document.getElementById(elem.id + "header")) {
+  if (document.querySelector(".drag-handle")) {
     // if present, the header is where you move the DIV from:
-    document.getElementById(elem.id + "header").onmousedown = dragMouseDown;
+    document.querySelector(".drag-handle").onmousedown = dragMouseDown;
   } else {
     // otherwise, move the DIV from anywhere inside the DIV:
     elem.onmousedown = dragMouseDown;
@@ -366,7 +370,7 @@ function initToolbar(opts) {
     toolbar.id = 'te-toolbar'
     toolbar.classList.add('te-toolbar')
     toolbar.style.cursor = 'move'
-    toolbar.innerHTML += '<strong>TOOLBAR</strong>'
+    toolbar.innerHTML += '<h3 class="drag-handle">TOOLBAR</h3>'
     toolbar.innerHTML += '<header></header>'
     toolbar.innerHTML += '<div id="te-tools"></div>'
 
