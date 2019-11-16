@@ -495,3 +495,7 @@ function thingyEditable(editables, config) {
   initToolbar(config)
   initMouseListener(config, EDITABLE_ELEMENTS)
 }
+
+export {
+  thingyEditable
+}
