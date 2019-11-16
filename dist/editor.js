@@ -48,13 +48,13 @@ function emit(e, opts) {
     controlled[tool.controls] = e.target.value
   }
 
-  const update = (key, path, val) => {
+  const update = (e, opts, path, val) => {
     // call update on each backend
     opts.backends.forEach(backend => {
       if (typeof backend.update !== 'function') {
         console.error('backend does not have an update function: ', backend)
       }
-      backend.update(key, path, val)
+      backend.update(e, opts, path, val)
     })
   }
 
@@ -63,8 +63,7 @@ function emit(e, opts) {
 
     if (tool.controls) {
       // TODO better delineate events somehow
-      // TODO don't hard-code 'app'
-      update('app', `${path} ${tool.path || tool.controls}`, controlled[tool.controls])
+      update(e, opts, `${path} ${tool.path || tool.controls}`, controlled[tool.controls])
     }
   }
 }

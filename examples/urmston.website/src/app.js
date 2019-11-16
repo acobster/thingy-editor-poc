@@ -39,4 +39,7 @@ thingyEditable([{
 }], {
   // Set up the backends for our editor
   backends: [localStorageBackend],
+  localStorageBackend: {
+    topLevelKey: 'app',
+  },
 })

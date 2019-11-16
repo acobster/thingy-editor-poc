@@ -15,7 +15,12 @@ function get(key) {
   return val ? JSON.parse(val) : null
 }
 
-function update(key, path, val) {
+function update(e, opts, path, val) {
+  if ( ! (opts.localStorageBackend && opts.localStorageBackend.topLevelKey) ) {
+    throw new Error('localStorageBackend expects a localStorageBackend.topLevelKey key in config');
+  }
+
+  const key = opts.localStorageBackend.topLevelKey
   const data = get(key)
   const vector = path.split(' ')
 
