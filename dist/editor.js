@@ -20,6 +20,8 @@
  *
  */
 
+import localStorageBackend from './localStorageBackend'
+
 /**
  * Main event function. Handles events that potentially change the DOM or
  * the application state. Eventually should be completely pluggable and
@@ -543,5 +545,6 @@ function thingyEditable(editables, config) {
 }
 
 export {
-  thingyEditable
+  thingyEditable,
+  localStorageBackend,
 }
