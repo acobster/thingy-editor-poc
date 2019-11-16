@@ -20,6 +20,8 @@
  *
  */
 
+import { get, emit } from './backend'
+
 const THINGY_TEXT_TOOLS = [{
   text: 'B',
   controls: 'selection',
@@ -50,6 +52,7 @@ const THINGY_TOOLS = {
       type: 'text',
       controls: 'href',
       on: 'keyup',
+      path: 'url',
     }, {
       type: 'link',
       tag: 'a',
@@ -211,11 +214,14 @@ function updateHref(tool, controlled, toolUiEvent) {
 }
 
 function toolAction(tool, controlled, toolUiEvent) {
+  // TODO implement DOM manipulations as a backend!!
   if (tool.command) {
     document.execCommand(tool.command, null, tool.commandArg)
   } else if (tool.controls) {
     controlled[tool.controls] = toolUiEvent.target.value
   }
+
+  emit(tool, controlled, toolUiEvent)
 }
 
 function getToolTagName(tool) {

@@ -12,10 +12,11 @@ class SocialNav extends HTMLElement {
 
     const socials = data.nav.items
 
-    socials.forEach(social => {
+    socials.forEach((social, idx) => {
       const a     = document.createElement('a')
       a.href      = social.url
       a.innerText = social.text
+      a.dataset.thingyPath = `nav items ${idx}`
       section.appendChild(a)
     })
 
