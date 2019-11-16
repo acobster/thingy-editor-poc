@@ -33,7 +33,6 @@ import localStorageBackend from './localStorageBackend'
  * the editing tool.
  */
 function emit(tool, elem, toolUiEvent, opts) {
-  //TODO
   if ( ! (opts && opts.backends && typeof opts.backends.forEach === 'function') ) {
     console.error('no valid backends detected')
     return
@@ -188,17 +187,6 @@ function cloneEditable(elem, opts) {
     selection.addRange(range)
   }
 
-  /*
-  c.focus()
-
-  const range = document.createRange()
-  range.setStart(getNodeByPath(c, focusPath), focusOffset)
-  range.collapse(true)
-
-  selection.removeAllRanges()
-  selection.addRange(range)
-  */
-
   return c
 }
 
@@ -216,25 +204,6 @@ function enterCallback(elem, opts) {
       makeEditable(cloned, opts)
     }
   }
-
-  /*
-  // special text-based handling for inline elems??
-  return function __onCtrlEnter(e) {
-    if ( ! (e.which === 13 && e.ctrlKey)) return
-    e.preventDefault()
-
-    e.target.innerText += opts.onCtrlEnter.appendText
-
-    const range = document.createRange()
-    range.selectNodeContents(e.target)
-    range.collapse(false)
-    const selection = window.getSelection()
-    selection.removeAllRanges()
-    selection.addRange(range)
-
-    return false
-  }
-  */
 }
 
 
@@ -244,12 +213,6 @@ function enterCallback(elem, opts) {
  * TOOLS
  */
 
-
-function updateHref(tool, controlled, toolUiEvent) {
-  controlled.href = toolUiEvent.target.value
-  // TODO make this not horrible
-  document.getElementById('te-link-tester').href = toolUiEvent.target.value
-}
 
 function toolAction(tool, controlled, toolUiEvent, opts) {
   // TODO implement DOM manipulations as a backend!!

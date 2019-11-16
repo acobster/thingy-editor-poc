@@ -22,10 +22,10 @@ function update(key, path, val) {
   let merger = vector.reverse().reduce((_merger, step) => {
     let obj = {}
     obj[step] = _merger
-    console.log(obj)
     return obj
   }, val)
 
   save(key, _.merge(data, merger))
+  console.log(vector, val)
 }
 
