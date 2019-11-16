@@ -1,5 +1,5 @@
 import { thingyEditable } from './vendor/editor.js'
-import { get, save } from './vendor/backend.js'
+import { get, save, update } from './vendor/backend.js'
 
 const data = get('app')
 
@@ -27,6 +27,9 @@ class SocialNav extends HTMLElement {
 customElements.define('social-nav', SocialNav)
 
 
+// Set up the backend for our editor
+const backend = { update }
+
 // Set up our editor
 thingyEditable([{
   selector: '.socials',
@@ -37,4 +40,6 @@ thingyEditable([{
   disallowDefaultEnter: true,
   nested: ['a', 'a h3', 'div em', 'p'],
   cloneOnCtrlEnter: true,
-}])
+}], {
+  backend
+})

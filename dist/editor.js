@@ -20,7 +20,34 @@
  *
  */
 
-import { get, emit } from './backend'
+/**
+ * Main event function. Handles events that potentially change the DOM or
+ * the application state. Eventually should be completely pluggable and
+ * transparent.
+ *
+ * TODO refine this API - eventually should probably only take an Event
+ * and a config. Ideally the Event would encapsulate everything about the
+ * change to the application state, including the element being edited and
+ * the editing tool.
+ */
+function emit(tool, elem, toolUiEvent, opts) {
+  if ( ! (opts && opts.backend && opts.backend.update) ) {
+    console.error('no valid backend detected')
+    return
+  }
+
+  const { update } = opts.backend
+
+  if (elem && elem.dataset && elem.dataset.thingyPath) {
+    const path = elem.dataset.thingyPath
+
+    if (tool.controls) {
+      // TODO better delineate events somehow
+      // TODO don't hard-code 'app'
+      update('app', `${path} ${tool.path || tool.controls}`, elem[tool.controls])
+    }
+  }
+}
 
 const THINGY_TEXT_TOOLS = [{
   text: 'B',
@@ -213,7 +240,7 @@ function updateHref(tool, controlled, toolUiEvent) {
   document.getElementById('te-link-tester').href = toolUiEvent.target.value
 }
 
-function toolAction(tool, controlled, toolUiEvent) {
+function toolAction(tool, controlled, toolUiEvent, opts) {
   // TODO implement DOM manipulations as a backend!!
   if (tool.command) {
     document.execCommand(tool.command, null, tool.commandArg)
@@ -221,7 +248,7 @@ function toolAction(tool, controlled, toolUiEvent) {
     controlled[tool.controls] = toolUiEvent.target.value
   }
 
-  emit(tool, controlled, toolUiEvent)
+  emit(tool, controlled, toolUiEvent, opts)
 }
 
 function getToolTagName(tool) {
@@ -231,9 +258,9 @@ function getToolTagName(tool) {
   return tool.tag || 'button'
 }
 
-function addToolListener(toolElem, tool, controlled) {
+function addToolListener(toolElem, tool, controlled, opts) {
   const on = tool.on || 'click'
-  toolElem.addEventListener(on, e => { toolAction(tool, controlled, e) })
+  toolElem.addEventListener(on, e => { toolAction(tool, controlled, e, opts) })
 }
 
 function createToolElement(tool, controlled, opts) {
@@ -278,7 +305,7 @@ function createToolElement(tool, controlled, opts) {
     toolElem.title = tool.tooltip
   }
 
-  addToolListener(toolElem, tool, controlled)
+  addToolListener(toolElem, tool, controlled, opts)
 
   return toolElem
 }
@@ -486,13 +513,15 @@ function disableLinks(elem, opts) {
 function thingyEditable(editables, config) {
   config = config || {}
 
+  config.backend = config.backend
+
   config.appendToolbarTo = config.appendToolbarTo || document.body
 
   editables.forEach(editableOpts => {
     const elements = Array.from(document.querySelectorAll(editableOpts.selector))
     const options  = Object.assign(
       {},
-      config || {},
+      config,
       editableOpts
     )
 

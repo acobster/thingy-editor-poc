@@ -23,14 +23,3 @@ export function update(key, path, val) {
   save(key, _.merge(data, merger))
 }
 
-export function emit(tool, elem, toolUiEvent) {
-  if (elem && elem.dataset && elem.dataset.thingyPath) {
-    const path = elem.dataset.thingyPath
-
-    if (tool.controls) {
-      // TODO better delineate events somehow
-      // TODO don't hard-code 'app'
-      update('app', `${path} ${tool.path || tool.controls}`, elem[tool.controls])
-    }
-  }
-}
