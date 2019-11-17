@@ -55,8 +55,11 @@ function emit(e, config) {
       op(elem, config)
     } else if (typeof op === 'object') {
       Object.keys(op).forEach(k => {
-        // also handle functions
-        elem[k] = op[k]
+        if (typeof op[k] === 'function') {
+          op[k].call(elem)
+        } else {
+          elem[k] = op[k]
+        }
       })
     }
   }
