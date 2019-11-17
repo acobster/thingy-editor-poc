@@ -33,21 +33,20 @@ import domBackend from './domBackend'
  * change to the application state, including the element being edited and
  * the editing tool.
  */
-function emit(e, config) {
+function emit(toolEvent, config) {
   if ( ! (config && config.backends && typeof config.backends.forEach === 'function') ) {
     console.error('no valid backends detected')
     return
   }
 
-  const tool = e.context.tool
-  const elem = e.context.controlled
+  const { tool, elem, domEvent } = toolEvent
 
   // TODO abstract these ops back out to the tools
   let op = {}
   if (tool.command) {
     op.innerText = () => { document.execCommand(tool.command, null, tool.commandArg) }
   } else if (tool.controls) {
-    op[tool.controls] = e.target.value
+    op[tool.controls] = domEvent.target.value
   }
 
 
@@ -223,14 +222,14 @@ function getToolTagName(tool) {
   return tool.tag || 'button'
 }
 
-function addToolListener(toolElem, tool, controlled, opts) {
+function addToolListener(toolElem, tool, elem, config) {
   const on = tool.on || 'click'
 
-  // add to the event context and emit the Event to our backends
-  toolElem.addEventListener(on, e => {
-    e.context = { tool, controlled }
+  // wrap the event along with some context and emit the Event to our backends
+  toolElem.addEventListener(on, domEvent => {
+    const toolEvent = { domEvent, tool, elem }
 
-    emit(e, opts)
+    emit(toolEvent, config)
   })
 }
 
