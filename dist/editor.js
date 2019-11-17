@@ -21,6 +21,7 @@
  */
 
 import localStorageBackend from './localStorageBackend'
+import domBackend from './domBackend'
 
 /**
  * Main event function. Handles events that potentially change the DOM or
@@ -48,25 +49,6 @@ function emit(e, config) {
   } else if (tool.controls) {
     op[tool.controls] = e.target.value
   }
-
-  // turn this into a proper backend
-  const updateDom = (elem, op, config) => {
-    if (typeof op === 'function') {
-      op(elem, config)
-    } else if (typeof op === 'object') {
-      Object.keys(op).forEach(k => {
-        if (typeof op[k] === 'function') {
-          op[k].call(elem)
-        } else {
-          elem[k] = op[k]
-        }
-      })
-    }
-  }
-
-
-  // ✔️  We're now expressing op as a { key: value } map
-  updateDom(elem, op, config)
 
 
 
@@ -503,6 +485,9 @@ function thingyEditable(editables, config) {
   config = config || {}
 
   config.appendToolbarTo = config.appendToolbarTo || document.body
+
+  // TODO support disabling domBackend??
+  config.backends.push(domBackend)
 
   editables.forEach(editableOpts => {
     const elements = Array.from(document.querySelectorAll(editableOpts.selector))
