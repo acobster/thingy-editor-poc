@@ -326,7 +326,7 @@ function updateToolbarHeader(elem, editable, opts) {
 
   const path = opts.nested
     ? [opts.selector, matchNestedSelector(elem, opts)]
-    : [matchNestedSelector(elem, opts)]
+    : [opts.selector]
 
   header.innerHTML = path.join(' &raquo; ')
 }
@@ -449,6 +449,9 @@ function makeEditable(elem, opts) {
     // TODO test this
     elem.setAttribute('contenteditable', true)
     elem.setAttribute('tabindex', 0)
+    elem.addEventListener('focus', e => {
+      displayTools(e, elem, opts)
+    })
   }
 
   if (opts.cloneOnCtrlEnter) {
