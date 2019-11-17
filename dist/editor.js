@@ -27,11 +27,6 @@ import domBackend from './domBackend'
  * Main event function. Handles events that potentially change the DOM or
  * the application state. Eventually should be completely pluggable and
  * transparent.
- *
- * TODO refine this API - eventually should probably only take an Event
- * and a config. Ideally the Event would encapsulate everything about the
- * change to the application state, including the element being edited and
- * the editing tool.
  */
 function emit(toolEvent, config) {
   if ( ! (config && config.backends && typeof config.backends.forEach === 'function') ) {
@@ -39,24 +34,12 @@ function emit(toolEvent, config) {
     return
   }
 
-  const { tool, elem, domEvent } = toolEvent
-
-  // TODO abstract these ops back out to the tools
-  let op = {}
-  if (tool.command) {
-    op.innerText = () => { document.execCommand(tool.command, null, tool.commandArg) }
-  } else if (tool.controls) {
-    op[tool.controls] = domEvent.target.value
-  }
-
-
-
   // call update on each backend
   config.backends.forEach(backend => {
     if (typeof backend.update !== 'function') {
       console.error('backend does not have an update function: ', backend)
     }
-    backend.update(elem, op, config)
+    backend.update(toolEvent.elem, toolEvent.op, config)
   })
 }
 
@@ -222,12 +205,31 @@ function getToolTagName(tool) {
   return tool.tag || 'button'
 }
 
+function toolOp(tool, domEvent) {
+  const op = {}
+
+  if (tool.command) {
+    // WYSIWYG tool
+    op.innerText = () => {
+      document.execCommand(tool.command, null, tool.commandArg)
+    }
+  } else {
+    op[tool.controls] = domEvent.target.value
+  }
+
+  return op
+}
+
 function addToolListener(toolElem, tool, elem, config) {
   const on = tool.on || 'click'
 
   // wrap the event along with some context and emit the Event to our backends
   toolElem.addEventListener(on, domEvent => {
-    const toolEvent = { domEvent, tool, elem }
+    // Close around the domEvent. We need to do this here because it tells us
+    // the new value of the attribute being edited (e.g. in the case of a link
+    // editor, where we get the new href from an <input> inside the tool).
+    const op = toolOp(tool, domEvent)
+    const toolEvent = { domEvent, tool, elem, op }
 
     emit(toolEvent, config)
   })
