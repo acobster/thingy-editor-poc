@@ -15,22 +15,28 @@ function get(key) {
   return val ? JSON.parse(val) : null
 }
 
-function update(e, opts, path, val) {
-  if ( ! (opts.localStorageBackend && opts.localStorageBackend.topLevelKey) ) {
+function update(elem, op, config) {
+  if ( ! (config.localStorageBackend && config.localStorageBackend.topLevelKey) ) {
     throw new Error('localStorageBackend expects a localStorageBackend.topLevelKey key in config');
   }
 
-  const key = opts.localStorageBackend.topLevelKey
-  const data = get(key)
-  const vector = path.split(' ')
+  if ( ! elem.dataset.thingyPath ) {
+    console.error('no data-thingy-path attr found on element', elem)
+    return
+  }
 
-  let merger = vector.reverse().reduce((_merger, step) => {
+  const key = config.localStorageBackend.topLevelKey
+  const data = get(key)
+
+  const path = elem.dataset.thingyPath.split(' ')
+  const merger = path.reverse().reduce((_merger, step) => {
+    if (typeof step === 'object') return step
     let obj = {}
     obj[step] = _merger
     return obj
-  }, val)
-
-  save(key, _.merge(data, merger))
-  console.log(vector, val)
+  }, op)
+  const v = _.merge(data, merger)
+  console.log(path, v, v.nav.items[2])
+  save(key, v)
 }
 

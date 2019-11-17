@@ -32,40 +32,48 @@ import localStorageBackend from './localStorageBackend'
  * change to the application state, including the element being edited and
  * the editing tool.
  */
-function emit(e, opts) {
-  if ( ! (opts && opts.backends && typeof opts.backends.forEach === 'function') ) {
+function emit(e, config) {
+  if ( ! (config && config.backends && typeof config.backends.forEach === 'function') ) {
     console.error('no valid backends detected')
     return
   }
 
-  const { tool, controlled } = e.context
+  const tool = e.context.tool
+  const elem = e.context.controlled
 
-  // TODO make this a generic backend
-  // DOM manipulations
+  // TODO abstract these ops back out to the tools
+  let op = {}
   if (tool.command) {
-    document.execCommand(tool.command, null, tool.commandArg)
+    op.innerText = () => { document.execCommand(tool.command, null, tool.commandArg) }
   } else if (tool.controls) {
-    controlled[tool.controls] = e.target.value
+    op[tool.controls] = e.target.value
   }
 
-  const update = (e, opts, path, val) => {
-    // call update on each backend
-    opts.backends.forEach(backend => {
-      if (typeof backend.update !== 'function') {
-        console.error('backend does not have an update function: ', backend)
-      }
-      backend.update(e, opts, path, val)
-    })
-  }
-
-  if (controlled && controlled.dataset && controlled.dataset.thingyPath) {
-    const path = controlled.dataset.thingyPath
-
-    if (tool.controls) {
-      // TODO better delineate events somehow
-      update(e, opts, `${path} ${tool.path || tool.controls}`, controlled[tool.controls])
+  // turn this into a proper backend
+  const updateDom = (elem, op, config) => {
+    if (typeof op === 'function') {
+      op(elem, config)
+    } else if (typeof op === 'object') {
+      Object.keys(op).forEach(k => {
+        // also handle functions
+        elem[k] = op[k]
+      })
     }
   }
+
+
+  // ✔️  We're now expressing op as a { key: value } map
+  updateDom(elem, op, config)
+
+
+
+  // call update on each backend
+  config.backends.forEach(backend => {
+    if (typeof backend.update !== 'function') {
+      console.error('backend does not have an update function: ', backend)
+    }
+    backend.update(elem, op, config)
+  })
 }
 
 const THINGY_TEXT_TOOLS = [{
