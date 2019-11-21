@@ -18,6 +18,12 @@
  *   ➡️  pseudo-elements won't work, will need to inject elements into the DOM
  *   ➡️  negative margins for positioning? How generically can that work?
  *
+ * - Good story for "hidden" elements or site settings:
+ *   ➡️  API keys
+ *   ➡️  page titles & descriptions
+ *   ➡️  background images?
+ *   ➡️  etc.
+ *
  */
 
 import localStorageBackend from './localStorageBackend'
@@ -43,6 +49,7 @@ function emit(toolEvent, config) {
   })
 }
 
+// TODO refactor as an array
 const THINGY_TEXT_TOOLS = [{
   text: 'B',
   controls: 'selection',
@@ -60,6 +67,7 @@ const THINGY_TEXT_TOOLS = [{
   tooltip: 'Underline',
 }]
 
+// TODO refactor as an array
 const THINGY_TOOLS = {
   'p': {
     tools: THINGY_TEXT_TOOLS,
@@ -290,6 +298,7 @@ function displayTools(focusEvent, editable, opts) {
   // parent <a> elements, so we don't have to do hacky shit like this
   const elem = opts.nested ? focusEvent.target : editable
 
+  // TODO refactor tools as an array of objects with callbacks
   const toolset = Object.keys(THINGY_TOOLS).filter(selector => {
     // TODO maintain mapping of which element this tool is controlling
     return editableMatchesSelector(elem, editable, selector)
