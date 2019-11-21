@@ -5,7 +5,9 @@ const data = localStorageBackend.get('app', {
   settings: {
     heading: 'Will Urmston',
     subheading: 'web design + build',
-    copyright: '(c) Will Urmston',
+    education: 'Education: BFA Graphic Design 2016, Rhode Island School of Design',
+    previously: 'Previously: Facebook, Universe, DVTK, IFTTT',
+    interests: ' Current interests: peer-to-peer web, social equity, DJing, privacy, public transportation + urban planning, libraries...',
   },
   nav: {
     items: [{
@@ -16,6 +18,12 @@ const data = localStorageBackend.get('app', {
       innerText: 'are.na',
     }],
   },
+  projects: [{
+
+  }],
+  websites: [{
+
+  }],
 })
 localStorageBackend.save('app', data)
 
