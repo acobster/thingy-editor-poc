@@ -28,6 +28,11 @@ function update(elem, op, config) {
   const key = config.localStorageBackend.topLevelKey
   const data = get(key)
 
+  // handle strings as special ops indicating an edit to the innerText
+  if (typeof op === 'string') {
+    op = { innerText: op }
+  }
+
   const path = elem.dataset.thingyPath.split(' ')
   const merger = path.reverse().reduce((_merger, step) => {
     if (typeof step === 'object') return step

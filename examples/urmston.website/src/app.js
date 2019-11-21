@@ -10,10 +10,10 @@ const data = localStorageBackend.get('app', {
   nav: {
     items: [{
       href: 'https://twitter.com/willurmston',
-      text: 'twitter',
+      innerText: 'twitter',
     }, {
       href: 'https://www.are.na/will-urmston-1525122915',
-      text: 'are.na',
+      innerText: 'are.na',
     }],
   },
 })
@@ -23,7 +23,7 @@ class TextComponent extends HTMLElement {
   constructor() {
     super()
     if (this.dataset.thingyPath) {
-      const text = this.dataset.thingyPath.split(' ').reduce((val, step) => {
+      let text = this.dataset.thingyPath.split(' ').reduce((val, step) => {
         if (val[step]) {
           val = val[step]
         } else {
@@ -32,6 +32,11 @@ class TextComponent extends HTMLElement {
 
         return val
       }, data)
+
+      if (typeof text === 'object' && typeof text.innerText !== 'undefined') {
+        text = text.innerText
+      }
+
       this.innerText = text
     }
   }
@@ -49,7 +54,7 @@ class SocialNav extends HTMLElement {
     socials.forEach((social, idx) => {
       const a     = document.createElement('a')
       a.href      = social.href
-      a.innerText = social.text
+      a.innerText = social.innerText
       a.dataset.thingyPath = `nav items ${idx}`
       section.appendChild(a)
     })

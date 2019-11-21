@@ -427,6 +427,16 @@ function subscribe(elem) {
   EDITABLE_ELEMENTS.push(elem)
 }
 
+function listenForInnerTextEdits(elem, config) {
+  // TODO do this in a more declarative way
+  elem.addEventListener('keyup', domEvent => {
+    const op        = domEvent.target.innerText
+    const toolEvent = { domEvent, elem, op }
+
+    emit(toolEvent, config)
+  })
+}
+
 function makeEditable(elem, opts) {
   subscribe(elem)
   elem.style.cursor = 'pointer'
@@ -443,6 +453,7 @@ function makeEditable(elem, opts) {
         child.style.cursor = 'pointer'
 
 				child.addEventListener('change', e => { console.log('something changed') })
+        listenForInnerTextEdits(child, opts)
       })
     })
   } else {
@@ -452,16 +463,7 @@ function makeEditable(elem, opts) {
     elem.addEventListener('focus', e => {
       displayTools(e, elem, opts)
     })
-
-    if (opts.toolset === 'text') {
-      // TODO do this in a more declarative way
-      elem.addEventListener('keyup', domEvent => {
-        const op        = domEvent.target.innerText
-        const toolEvent = { domEvent, elem, op }
-
-        emit(toolEvent, opts)
-      })
-    }
+    listenForInnerTextEdits(elem, opts)
   }
 
   if (opts.cloneOnCtrlEnter) {
