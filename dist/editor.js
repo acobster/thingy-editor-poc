@@ -469,7 +469,7 @@ function makeEditable(elem, opts) {
     listenForInnerTextEdits(elem, opts)
   }
 
-  if (opts.cloneOnCtrlEnter) {
+  if (opts.repeatable) {
     elem.addEventListener('keypress', enterCallback(elem, opts))
   }
 

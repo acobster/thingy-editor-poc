@@ -88,7 +88,7 @@ thingyEditable([{
   selector: '.list li',
   disallowDefaultEnter: true,
   nested: ['a', 'a h3', 'div em', 'p'],
-  cloneOnCtrlEnter: true,
+  repeatable: true,
 }], {
   // Set up the backends for our editor
   backends: [localStorageBackend],
