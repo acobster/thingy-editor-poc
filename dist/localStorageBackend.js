@@ -10,9 +10,9 @@ function save(key, val) {
   localStorage.setItem(key, JSON.stringify(val))
 }
 
-function get(key) {
+function get(key, defaultVal) {
   const val = localStorage.getItem(key)
-  return val ? JSON.parse(val) : null
+  return val ? JSON.parse(val) : defaultVal
 }
 
 function update(elem, op, config) {

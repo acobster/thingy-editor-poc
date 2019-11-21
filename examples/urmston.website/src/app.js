@@ -1,6 +1,23 @@
 import { thingyEditable, localStorageBackend } from './vendor/editor.js'
 
-const data = localStorageBackend.get('app')
+// bootstrap default data
+const data = localStorageBackend.get('app', {
+  settings: {
+    heading: 'Will Urmston',
+    subheading: 'web design + build',
+    copyright: '(c) Will Urmston',
+  },
+  nav: {
+    items: [{
+      href: 'https://twitter.com/willurmston',
+      text: 'twitter',
+    }, {
+      href: 'https://www.are.na/will-urmston-1525122915',
+      text: 'are.na',
+    }],
+  },
+})
+localStorageBackend.save('app', data)
 
 class TextComponent extends HTMLElement {
   constructor() {
