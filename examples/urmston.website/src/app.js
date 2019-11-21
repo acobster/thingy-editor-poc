@@ -22,8 +22,8 @@ localStorageBackend.save('app', data)
 class TextComponent extends HTMLElement {
   constructor() {
     super()
-    if (this.getAttribute('path')) {
-      const text = this.getAttribute('path').split('.').reduce((val, step) => {
+    if (this.dataset.thingyPath) {
+      const text = this.dataset.thingyPath.split(' ').reduce((val, step) => {
         if (val[step]) {
           val = val[step]
         } else {
@@ -65,6 +65,9 @@ customElements.define('social-nav', SocialNav)
 
 // Set up our editor
 thingyEditable([{
+  selector: 'text-component',
+  toolset: 'text',
+}, {
   selector: '.socials',
   disallowDefaultEnter: true,
   nested: ['a'],

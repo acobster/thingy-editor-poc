@@ -229,7 +229,7 @@ function addToolListener(toolElem, tool, elem, config) {
     // the new value of the attribute being edited (e.g. in the case of a link
     // editor, where we get the new href from an <input> inside the tool).
     const op = toolOp(tool, domEvent)
-    const toolEvent = { domEvent, tool, elem, op }
+    const toolEvent = { domEvent, elem, op }
 
     emit(toolEvent, config)
   })
@@ -452,6 +452,16 @@ function makeEditable(elem, opts) {
     elem.addEventListener('focus', e => {
       displayTools(e, elem, opts)
     })
+
+    if (opts.toolset === 'text') {
+      // TODO do this in a more declarative way
+      elem.addEventListener('keyup', domEvent => {
+        const op        = domEvent.target.innerText
+        const toolEvent = { domEvent, elem, op }
+
+        emit(toolEvent, opts)
+      })
+    }
   }
 
   if (opts.cloneOnCtrlEnter) {

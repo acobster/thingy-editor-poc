@@ -12,4 +12,9 @@ function update(elem, op, config) {
       }
     })
   }
+
+  // implicit else if:
+  // for now assume that ops of type string denote the innerText of a
+  // contenteditable being edited directly, meaning we don't actually have to
+  // update anything
 }
