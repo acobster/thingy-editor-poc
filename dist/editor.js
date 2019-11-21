@@ -490,8 +490,11 @@ function thingyEditable(editables, config) {
 
   config.appendToolbarTo = config.appendToolbarTo || document.body
 
-  // TODO support disabling domBackend??
-  config.backends.push(domBackend)
+  // check if user has explicitly disabled domBackend;
+  // if not, attach the domBackend by default
+  if (config.disableDomBackend !== false) {
+    config.backends.push(domBackend)
+  }
 
   editables.forEach(editableOpts => {
     const elements = Array.from(document.querySelectorAll(editableOpts.selector))
