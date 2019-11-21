@@ -386,10 +386,14 @@ function initToolbar(opts) {
 }
 
 function nearElement(x, y, elem) {
-  return x > elem.offsetLeft - 16
-      && x < elem.offsetLeft + elem.offsetWidth + 16
-      && y > elem.offsetTop - 16
-      && y < elem.offsetTop + elem.offsetHeight + 16
+  // TODO pass in config
+  // TODO make outline width configurable!
+  const outlineWidth = 16
+
+  return x > elem.getBoundingClientRect().left   - outlineWidth
+      && x < elem.getBoundingClientRect().right  + outlineWidth
+      && y > elem.getBoundingClientRect().top    - outlineWidth
+      && y < elem.getBoundingClientRect().bottom + outlineWidth
 }
 
 function initMouseListener(opts, editables) {
@@ -452,7 +456,6 @@ function makeEditable(elem, opts) {
         subscribe(child)
         child.style.cursor = 'pointer'
 
-				child.addEventListener('change', e => { console.log('something changed') })
         listenForInnerTextEdits(child, opts)
       })
     })
