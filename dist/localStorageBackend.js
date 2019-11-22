@@ -29,7 +29,7 @@ function update(elem, op, config) {
   const data = get(key)
 
   // handle strings as special ops indicating an edit to the innerText
-  if (typeof op === 'string') {
+  if (elem.dataset.thingySeparateInnerText && typeof op === 'string') {
     op = { innerText: op }
   }
 

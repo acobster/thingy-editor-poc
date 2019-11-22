@@ -446,6 +446,9 @@ function listenForInnerTextEdits(elem, config) {
     const op        = domEvent.target.innerText
     const toolEvent = { domEvent, elem, op }
 
+    // stop listeners on parent elements from firing
+    domEvent.stopImmediatePropagation()
+
     emit(toolEvent, config)
   })
 }

@@ -58,7 +58,6 @@ class ListComponent extends HTMLElement {
     const items = data[this.dataset.thingyPath].map((item, idx) => {
       const li = document.createElement('li')
 
-      console.log(item.link)
       const a = document.createElement('a')
       a.setAttribute('target', '_blank')
       a.href = item.link.href || ''
