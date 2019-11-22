@@ -67,35 +67,30 @@ const THINGY_TEXT_TOOLS = [{
   tooltip: 'Underline',
 }]
 
-// TODO refactor as an array
-const THINGY_TOOLS = {
-  'p': {
-    tools: THINGY_TEXT_TOOLS,
-  },
-  'div': {
-    tools: THINGY_TEXT_TOOLS,
-  },
-  'a': {
-    tools: [{
-      label: 'Link href',
-      type: 'text',
-      controls: 'href',
-      on: 'keyup',
-      path: 'url',
-    }, {
-      type: 'link',
-      tag: 'a',
-      linksTo: 'href',
-      text: '➡️ '
-    }],
-  },
-  'img': {
-    tools: [{
-      text: 'image??',
-      type: 'image',
-    }],
-  },
-}
+const THINGY_TOOLS = [{
+  tools: THINGY_TEXT_TOOLS,
+  selector: 'p,div',
+}, {
+  selector: 'a',
+  tools: [{
+    label: 'Link href',
+    type: 'text',
+    controls: 'href',
+    on: 'keyup',
+    path: 'url',
+  }, {
+    type: 'link',
+    tag: 'a',
+    linksTo: 'href',
+    text: '➡️ '
+  }],
+}, {
+  selector: 'img',
+  tools: [{
+    text: 'image??',
+    type: 'image',
+  }],
+}]
 
 
 
@@ -290,20 +285,25 @@ function createToolElement(tool, controlled, opts) {
   return toolElem
 }
 
-function displayTools(focusEvent, editable, opts) {
+function displayTools(focusEvent, editable, config) {
   const container = document.getElementById('te-tools')
   if (!container) return
 
   // TODO revise focus logic to make it so we can more reliably focus on
   // parent <a> elements, so we don't have to do hacky shit like this
-  const elem = opts.nested ? focusEvent.target : editable
+  const elem = config.nested ? focusEvent.target : editable
 
-  // TODO refactor tools as an array of objects with callbacks
-  const toolset = Object.keys(THINGY_TOOLS).filter(selector => {
+  const toolset = config.tools.filter(tool => {
     // TODO maintain mapping of which element this tool is controlling
-    return editableMatchesSelector(elem, editable, selector)
-  }).reduce((tools, selector) => {
-    return tools.concat(THINGY_TOOLS[selector].tools)
+    const applicable = editableMatchesSelector(elem, editable, tool.selector)
+
+    if (typeof config.toolOperatesOnElement === 'function') {
+      return config.toolOperatesOnElement(tool, elem, applicable)
+    } else {
+      return applicable
+    }
+  }).reduce((toDisplay, t) => {
+    return toDisplay.concat(t.tools)
   }, [])
 
   if (toolset.length === 0) {
@@ -311,7 +311,7 @@ function displayTools(focusEvent, editable, opts) {
   } else {
     const toolElements = toolset.map(tool => {
       // TODO Determine which element this tool is controlling
-      return createToolElement(tool, elem, opts)
+      return createToolElement(tool, elem, config)
     })
     container.innerHTML = ''
     toolElements.forEach(toolElem => {
@@ -319,7 +319,7 @@ function displayTools(focusEvent, editable, opts) {
     })
   }
 
-  updateToolbarHeader(elem, editable, opts)
+  updateToolbarHeader(elem, editable, config)
 }
 
 function matchNestedSelector(elem, opts) {
@@ -519,6 +519,9 @@ function thingyEditable(editables, config) {
   if (config.disableDomBackend !== false) {
     config.backends.push(domBackend)
   }
+
+  const userTools = config.tools || []
+  config.tools = THINGY_TOOLS.concat(userTools)
 
   editables.forEach(editableOpts => {
     const elements = Array.from(document.querySelectorAll(editableOpts.selector))
