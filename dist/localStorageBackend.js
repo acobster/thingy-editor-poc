@@ -41,7 +41,6 @@ function update(elem, op, config) {
     return obj
   }, op)
   const v = _.merge(data, merger)
-  console.log(path, v, v.nav.items[2])
   save(key, v)
 }
 

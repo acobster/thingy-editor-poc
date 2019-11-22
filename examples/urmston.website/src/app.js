@@ -1,30 +1,8 @@
 import { thingyEditable, localStorageBackend } from './vendor/editor.js'
+import defaultData from './default-data'
 
 // bootstrap default data
-const data = localStorageBackend.get('app', {
-  settings: {
-    heading: 'Will Urmston',
-    subheading: 'web design + build',
-    education: 'Education: BFA Graphic Design 2016, Rhode Island School of Design',
-    previously: 'Previously: Facebook, Universe, DVTK, IFTTT',
-    interests: ' Current interests: peer-to-peer web, social equity, DJing, privacy, public transportation + urban planning, libraries...',
-  },
-  nav: {
-    items: [{
-      href: 'https://twitter.com/willurmston',
-      innerText: 'twitter',
-    }, {
-      href: 'https://www.are.na/will-urmston-1525122915',
-      innerText: 'are.na',
-    }],
-  },
-  projects: [{
-
-  }],
-  websites: [{
-
-  }],
-})
+const data = localStorageBackend.get('app', defaultData)
 localStorageBackend.save('app', data)
 
 class TextComponent extends HTMLElement {
@@ -40,10 +18,6 @@ class TextComponent extends HTMLElement {
 
         return val
       }, data)
-
-      if (typeof text === 'object' && typeof text.innerText !== 'undefined') {
-        text = text.innerText
-      }
 
       this.innerText = text
     }
@@ -64,6 +38,8 @@ class SocialNav extends HTMLElement {
       a.href      = social.href
       a.innerText = social.innerText
       a.dataset.thingyPath = `nav items ${idx}`
+      // tell localStorage to consider innerText a sub-field
+      a.dataset.thingySeparateInnerText = 1
       section.appendChild(a)
     })
 
@@ -71,9 +47,55 @@ class SocialNav extends HTMLElement {
   }
 }
 
+class ListComponent extends HTMLElement {
+  constructor() {
+    super()
+
+    const ul = document.createElement('ul')
+    ul.setAttribute('class', 'list')
+
+
+    const items = data[this.dataset.thingyPath].map((item, idx) => {
+      const li = document.createElement('li')
+
+      console.log(item.link)
+      const a = document.createElement('a')
+      a.setAttribute('target', '_blank')
+      a.href = item.link.href || ''
+      a.dataset.thingyPath = `${this.dataset.thingyPath} ${idx} link`
+      const h3 = document.createElement('h3')
+      h3.dataset.thingyPath = `${this.dataset.thingyPath} ${idx} heading`
+      h3.innerText = item.heading || ''
+      a.appendChild(h3)
+
+      const em = document.createElement('em')
+      em.innerText = item.subheading || ''
+      em.dataset.thingyPath = `${this.dataset.thingyPath} ${idx} subheading`
+      const div = document.createElement('div')
+      div.appendChild(em)
+
+      const p = document.createElement('p')
+      p.dataset.thingyPath = `${this.dataset.thingyPath} ${idx} description`
+      p.innerText = item.description || ''
+
+      li.appendChild(a)
+      li.appendChild(div)
+      li.appendChild(p)
+
+      return li
+    })
+
+    items.forEach(li => {
+      ul.appendChild(li)
+    })
+    this.appendChild(ul)
+  }
+}
+
 
 customElements.define('text-component', TextComponent)
 customElements.define('social-nav', SocialNav)
+customElements.define('list-component', ListComponent)
 
 
 // Set up our editor
