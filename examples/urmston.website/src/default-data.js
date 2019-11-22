@@ -17,10 +17,16 @@ export default {
   },
   projects: [{
     heading: 'Paste by WeTransfer, 2019—present',
+    link: {
+      href: 'https://pasteapp.com/',
+    },
     subheading: 'UI design • React development',
     description: 'I\'m currently working with the Paste team to design and prototype a novel layout system for their presentation tool.',
   }, {
     heading: 'Universe, 2017—2018',
+    link: {
+      href: 'https://onuniverse.com/',
+    },
     subheading: 'product development • iOS design • web design • graphic design • React development',
     description: 'As a contract designer/developer for Universe I improved the design of their iOS website-builder and upgraded their React app, implementing new features and refactoring old ones.',
   }],

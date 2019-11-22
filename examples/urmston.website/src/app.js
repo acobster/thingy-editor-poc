@@ -60,7 +60,7 @@ class ListComponent extends HTMLElement {
 
       const a = document.createElement('a')
       a.setAttribute('target', '_blank')
-      a.href = item.link.href || ''
+      if (item.link) a.href = item.link.href || ''
       a.dataset.thingyPath = `${this.dataset.thingyPath} ${idx} link`
       const h3 = document.createElement('h3')
       h3.dataset.thingyPath = `${this.dataset.thingyPath} ${idx} heading`
