@@ -462,7 +462,14 @@ function makeEditable(elem, config) {
         child.addEventListener('focus', e => {
           displayTools(e, elem, config)
         })
-        subscribe(child, config)
+
+        // if child doesn't already have an independent config,
+        // create one for it
+        const childConfig = (typeof selector === 'object')
+          ? selector
+          : { selector }
+        subscribe(child, childConfig)
+
         child.style.cursor = 'pointer'
 
         listenForInnerTextEdits(child, config)
