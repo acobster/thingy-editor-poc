@@ -208,19 +208,16 @@ function getToolTagName(tool) {
   return tool.tag || 'button'
 }
 
-function toolOp(tool, domEvent) {
-  const op = {}
-
+function toolOp(tool, domEvent, elem) {
   if (tool.command) {
     // WYSIWYG tool
-    op.innerText = () => {
-      document.execCommand(tool.command, null, tool.commandArg)
-    }
+    document.execCommand(tool.command, null, tool.commandArg)
+    return elem.innerHTML
   } else {
+    const op = {}
     op[tool.controls] = domEvent.target.value
+    return op
   }
-
-  return op
 }
 
 function addToolListener(toolElem, tool, elem, config) {
@@ -231,7 +228,7 @@ function addToolListener(toolElem, tool, elem, config) {
     // Close around the domEvent. We need to do this here because it tells us
     // the new value of the attribute being edited (e.g. in the case of a link
     // editor, where we get the new href from an <input> inside the tool).
-    const op = toolOp(tool, domEvent)
+    const op = toolOp(tool, domEvent, elem)
     const toolEvent = { domEvent, elem, op }
 
     emit(toolEvent, config)

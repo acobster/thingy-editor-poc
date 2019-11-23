@@ -34,6 +34,7 @@ function update(elem, op, config) {
   }
 
   const path = elem.dataset.thingyPath.split(' ')
+
   const merger = path.reverse().reduce((_merger, step) => {
     if (typeof step === 'object') return step
     let obj = {}
@@ -41,6 +42,7 @@ function update(elem, op, config) {
     return obj
   }, op)
   const v = _.merge(data, merger)
+  console.log(path, op)
   save(key, v)
 }
 

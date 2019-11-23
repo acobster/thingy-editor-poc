@@ -75,7 +75,7 @@ class ListComponent extends HTMLElement {
 
       const p = document.createElement('p')
       p.dataset.thingyPath = `${this.dataset.thingyPath} ${idx} description`
-      p.innerText = item.description || ''
+      p.innerHTML = item.description || ''
 
       li.appendChild(a)
       li.appendChild(div)
