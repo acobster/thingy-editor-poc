@@ -402,9 +402,9 @@ function nearElement(x, y, elem) {
       && y < elem.getBoundingClientRect().bottom + outlineWidth
 }
 
-function initMouseListener(opts, editables) {
+function initMouseListeners(editables) {
   document.documentElement.addEventListener('mousemove', (e) => {
-    editables.forEach(elem => {
+    editables.forEach(({ elem, config }) => {
       if (nearElement(e.clientX, e.clientY, elem)) {
         //console.log([e.clientX, e.clientY], [elem.offsetLeft, elem.offsetTop])
         elem.style.outline = '16px solid red'
@@ -414,7 +414,7 @@ function initMouseListener(opts, editables) {
     })
   })
   document.documentElement.addEventListener('click', (e) => {
-    editables.forEach(elem => {
+    editables.forEach(({ elem }) => {
       // TODO may be "near" multiple editables; pick one to focus on
       // (based on nesting?? innermost position?)
       if (nearElement(e.clientX, e.clientY, elem)) {
@@ -431,10 +431,10 @@ function initMouseListener(opts, editables) {
  */
 
 
-var EDITABLE_ELEMENTS = [];
+var EDITABLES = [];
 
-function subscribe(elem) {
-  EDITABLE_ELEMENTS.push(elem)
+function subscribe(elem, config) {
+  EDITABLES.push({ elem, config })
 }
 
 function listenForInnerTextEdits(elem, config) {
@@ -450,22 +450,22 @@ function listenForInnerTextEdits(elem, config) {
   })
 }
 
-function makeEditable(elem, opts) {
-  subscribe(elem)
+function makeEditable(elem, config) {
+  subscribe(elem, config)
   elem.style.cursor = 'pointer'
 
-  if (opts.nested) {
-    opts.nested.forEach((selector) => {
+  if (config.nested) {
+    config.nested.forEach((selector) => {
       Array.from(elem.querySelectorAll(selector)).forEach(child => {
         child.setAttribute('contenteditable', true)
         child.setAttribute('tabindex', 0)
         child.addEventListener('focus', e => {
-          displayTools(e, elem, opts)
+          displayTools(e, elem, config)
         })
-        subscribe(child)
+        subscribe(child, config)
         child.style.cursor = 'pointer'
 
-        listenForInnerTextEdits(child, opts)
+        listenForInnerTextEdits(child, config)
       })
     })
   } else {
@@ -473,16 +473,16 @@ function makeEditable(elem, opts) {
     elem.setAttribute('contenteditable', true)
     elem.setAttribute('tabindex', 0)
     elem.addEventListener('focus', e => {
-      displayTools(e, elem, opts)
+      displayTools(e, elem, config)
     })
-    listenForInnerTextEdits(elem, opts)
+    listenForInnerTextEdits(elem, config)
   }
 
-  if (opts.repeatable) {
-    elem.addEventListener('keypress', enterCallback(elem, opts))
+  if (config.repeatable) {
+    elem.addEventListener('keypress', enterCallback(elem, config))
   }
 
-  if (opts && opts.disallowDefaultEnter) {
+  if (config && config.disallowDefaultEnter) {
     elem.addEventListener('keypress', (e) => { if (e.which === 13) e.preventDefault() })
   }
 }
@@ -525,11 +525,7 @@ function thingyEditable(editables, config) {
 
   editables.forEach(editableOpts => {
     const elements = Array.from(document.querySelectorAll(editableOpts.selector))
-    const options  = Object.assign(
-      {},
-      config,
-      editableOpts
-    )
+    const options  = Object.assign({}, config, editableOpts)
 
     elements.forEach((elem) => {
       makeEditable(elem, options)
@@ -538,7 +534,7 @@ function thingyEditable(editables, config) {
   })
 
   initToolbar(config)
-  initMouseListener(config, EDITABLE_ELEMENTS)
+  initMouseListeners(EDITABLES)
 }
 
 export {
