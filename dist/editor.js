@@ -391,25 +391,87 @@ function initToolbar(opts) {
   }
 }
 
-function nearElement(x, y, elem) {
-  // TODO pass in config
-  // TODO make outline width configurable!
-  const outlineWidth = 16
+function nearElement(x, y, elem, outlineWidth) {
+  const rect = elem.getBoundingClientRect()
+  return x > rect.left   - outlineWidth
+      && x < rect.right  + outlineWidth
+      && y > rect.top    - outlineWidth
+      && y < rect.bottom + outlineWidth
+}
 
-  return x > elem.getBoundingClientRect().left   - outlineWidth
-      && x < elem.getBoundingClientRect().right  + outlineWidth
-      && y > elem.getBoundingClientRect().top    - outlineWidth
-      && y < elem.getBoundingClientRect().bottom + outlineWidth
+function displayElementActions(elem, config) {
+  if (!config.repeatable) return
+
+  const minus = document.createElement('div')
+
+  minus.innerText = '-'
+  minus.style.position = 'fixed'
+  minus.style.top = (elem.getBoundingClientRect().top) + 'px'
+  minus.style.left = (elem.getBoundingClientRect().right + 16) + 'px'
+  minus.style.color = 'red'
+  minus.style.fontWeight = 'bold'
+  minus.style.fontSize = '52px'
+  minus.style.cursor = 'pointer'
+
+  // TODO create editable CRUD Event system
+  minus.addEventListener('click', e => {
+    elem.parentNode.removeChild(elem)
+  })
+
+  const plus = document.createElement('div')
+
+  plus.innerText = '+'
+  plus.style.position = 'fixed'
+  plus.style.top = (elem.getBoundingClientRect().bottom - 52) + 'px'
+  plus.style.left = (elem.getBoundingClientRect().right + 16) + 'px'
+  plus.style.color = 'red'
+  plus.style.fontWeight = 'bold'
+  plus.style.fontSize = '52px'
+  plus.style.cursor = 'pointer'
+
+  config.appendToolbarTo.appendChild(plus)
+
+  plus.addEventListener('click', e => {
+    const clone = cloneEditable(elem, config)
+    makeEditable(clone, config)
+  })
+
+  config.appendToolbarTo.appendChild(minus)
+  config.appendToolbarTo.appendChild(plus)
+
+  // TODO create editable CRUD Event system
+  plus.addEventListener('click', e => {
+    const clone = cloneEditable(elem, config)
+    makeEditable(clone, config)
+  })
+
+  return [minus, plus]
 }
 
 function initMouseListeners(editables) {
   document.documentElement.addEventListener('mousemove', (e) => {
     editables.forEach(({ elem, config }) => {
-      if (nearElement(e.clientX, e.clientY, elem)) {
+      if (nearElement(e.clientX, e.clientY, elem, 16)) {
         //console.log([e.clientX, e.clientY], [elem.offsetLeft, elem.offsetTop])
         elem.style.outline = '16px solid red'
       } else {
         elem.style.outline = 'initial'
+
+        // when mouse leaves area, hide the element actions unless it comes
+        // back within a half second
+      }
+
+      if (config.repeatable) {
+        const nearby = nearElement(e.clientX, e.clientY, elem, 16+52)
+
+        if (nearby && !(elem.actions && elem.actions.length)) {
+          elem.actions = displayElementActions(elem, config)
+        } else if (!nearby && elem.actions && elem.actions.length) {
+          elem.actions.forEach(a => {
+            if (a.parentNode) a.parentNode.removeChild(a)
+          })
+          elem.actions = []
+        }
       }
     })
   })
@@ -417,7 +479,7 @@ function initMouseListeners(editables) {
     editables.forEach(({ elem }) => {
       // TODO may be "near" multiple editables; pick one to focus on
       // (based on nesting?? innermost position?)
-      if (nearElement(e.clientX, e.clientY, elem)) {
+      if (nearElement(e.clientX, e.clientY, elem, 16)) {
         elem.focus()
       }
     })
